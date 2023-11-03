@@ -9,7 +9,9 @@
     "start": "node dist/index.js",
     "format": "prettier --write \"src/**/*.ts\"",
     "lint": "eslint . --ext .ts",
-    "lint:fix": "eslint . --ext .ts --fix"
+    "lint:fix": "eslint . --ext .ts --fix",
+    "prisma:generate": "prisma generate --schema=src/database/prisma/schema.prisma",
+    "prisma:migrate": "prisma migrate dev --schema=src/database/prisma/schema.prisma"
   },
   "keywords": [],
   "author": "",
