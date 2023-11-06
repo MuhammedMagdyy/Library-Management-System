@@ -18,3 +18,18 @@ model Book {
   createdAt         DateTime @default(now())
   updatedAt         DateTime @updatedAt
 }
+
+model User {
+  id             Int      @id @default(autoincrement())
+  email          String   @unique
+  password       String
+  name           String
+  role           Role     @default(BORROWER)
+  registeredDate DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+enum Role {
+  ADMIN
+  BORROWER
+}
