@@ -1,8 +1,8 @@
 # Library Management System
 
 ## Table of Contents
-- [Technologies](#technologies)
 - [Prerequisites](#prerequisites)
+- [Technologies](#technologies)
 - [Setup](#setup)
 
 ## Prerequisites
