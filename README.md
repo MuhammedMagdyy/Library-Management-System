@@ -1,8 +1,15 @@
 # Library Management System
 
+![Node.js](https://img.shields.io/badge/Node.js-18.18.0-green?logo=node.js&style=flat)
+![Express](https://img.shields.io/badge/Express-4.18.2-lightgrey?logo=express&style=flat)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.1.6-blue?logo=typescript&style=flat)
+![Docker](https://img.shields.io/badge/Docker-latest-blue?logo=docker&style=flat)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16.0-blue?logo=postgresql&style=flat)
+![Prisma](https://img.shields.io/badge/Prisma-5.0-blueviolet?logo=prisma&style=flat)
+
+
 ## Table of Contents
 - [Prerequisites](#prerequisites)
-- [Technologies](#technologies)
 - [Setup](#setup)
 
 ## Prerequisites
@@ -10,14 +17,6 @@
 - Download and install [PostgreSQL](https://www.postgresql.org/download/) & How to install it using [Docker](https://www.docker.com/) from [Docker Hub](https://hub.docker.com/_/postgres)
 - A text editor (e.g. Visual Studio Code `recommended`, Sublime Text)
 - A platform for testing APIs like [Postman](https://www.postman.com/downloads/)
-
-## Technologies
-- TypeScript
-- Nodejs (v18 or higher)
-  - Express.js
-- Docker
-- Prisma (ORM)
-- PostgreSQL
 
 ## Setup
 To set up this project locally, follow these steps:
