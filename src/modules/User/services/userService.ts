@@ -162,6 +162,7 @@ export class UserService {
           expiresIn: process.env.ACCESS_TOKEN_EXPIRY_TIME,
         },
       );
+
       const refreshToken = sign(
         { id: existingUser.id, role: existingUser.role },
         process.env.REFRESH_TOKEN_SECRET_KEY as Secret,
@@ -169,6 +170,7 @@ export class UserService {
           expiresIn: process.env.REFRESH_TOKEN_EXPIRY_TIME,
         },
       );
+
       const { accessTokenExpiryDate, refreshTokenExpiryDate } = jwtExpiryDate();
 
       return {
