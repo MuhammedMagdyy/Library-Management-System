@@ -16,6 +16,16 @@ export class BookRepo {
     return await this.prisma.book.findMany();
   }
 
+  async findManyWithSearch(field: string, query: string) {
+    return await this.prisma.book.findMany({
+      where: {
+        [field]: {
+          contains: query,
+        },
+      },
+    });
+  }
+
   async updateOne(
     query: Prisma.BookWhereUniqueInput,
     args: Prisma.BookUncheckedUpdateInput,

@@ -16,6 +16,10 @@ export class BookService {
     return await this.bookRepo.findMany();
   }
 
+  async findManyWithSearch(field: string, query: string) {
+    return await this.bookRepo.findManyWithSearch(field, query);
+  }
+
   async updateOne(
     query: Prisma.BookWhereUniqueInput,
     args: Prisma.BookUncheckedUpdateInput,
