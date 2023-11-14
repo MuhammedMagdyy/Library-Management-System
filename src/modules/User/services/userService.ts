@@ -1,7 +1,13 @@
 import { Prisma } from '@prisma/client';
 import { userRepo, type UserRepo } from '../repos/userRepo';
-import { PasswordService, expiryDate, jwtExpiryDate } from '../../../helpers';
-import { sign, verify, JwtPayload, Secret } from 'jsonwebtoken';
+import {
+  PasswordService,
+  generateJwt,
+  expiryDateJwt,
+  verifyJwt,
+  ACCESS_TOKEN,
+  REFRESH_TOKEN,
+} from '../../../helpers';
 import { ApiError } from '../../../middlewares';
 
 export class UserService {
@@ -18,20 +24,9 @@ export class UserService {
     const userObject = await this.userRepo.createOne({ ...args, password });
 
     if (userObject) {
-      const accessToken = sign(
+      const { accessToken, refreshToken } = generateJwt(
         { id: userObject.id, role: userObject.role },
-        process.env.ACCESS_TOKEN_SECRET_KEY as Secret,
-        {
-          expiresIn: process.env.ACCESS_TOKEN_EXPIRY_TIME,
-        },
-      );
-
-      const refreshToken = sign(
-        { id: userObject.id, role: userObject.role },
-        process.env.REFRESH_TOKEN_SECRET_KEY as Secret,
-        {
-          expiresIn: process.env.REFRESH_TOKEN_EXPIRY_TIME,
-        },
+        [ACCESS_TOKEN, REFRESH_TOKEN],
       );
 
       const user = {
@@ -42,7 +37,10 @@ export class UserService {
         registeredDate: userObject.registeredDate,
       };
 
-      const { accessTokenExpiryDate, refreshTokenExpiryDate } = jwtExpiryDate();
+      const { accessTokenExpiryDate, refreshTokenExpiryDate } = expiryDateJwt([
+        ACCESS_TOKEN,
+        REFRESH_TOKEN,
+      ]);
 
       return {
         user,
@@ -77,17 +75,9 @@ export class UserService {
   }
 
   async authenticateUser(accessToken: string) {
-    let payload;
-    try {
-      payload = verify(
-        accessToken,
-        process.env.ACCESS_TOKEN_SECRET_KEY as Secret,
-      ) as JwtPayload;
-    } catch {
-      throw new ApiError('Invalid token', 401);
-    }
+    const { payload } = verifyJwt(accessToken, ACCESS_TOKEN);
 
-    const user = await this.userRepo.findOne({ id: payload.id as number });
+    const user = await this.userRepo.findOne({ id: payload.id });
 
     if (!user) {
       throw new ApiError('You are not authorized', 401);
@@ -97,35 +87,19 @@ export class UserService {
   }
 
   async verifyRefreshToken(refreshToken: string) {
-    let payload;
-    try {
-      payload = verify(
-        refreshToken,
-        process.env.REFRESH_TOKEN_SECRET_KEY as Secret,
-      ) as JwtPayload;
-    } catch {
-      throw new ApiError('Invalid token', 401);
-    }
+    const { payload } = verifyJwt(refreshToken, REFRESH_TOKEN);
 
-    const user = await this.userRepo.findOne({ id: payload.id as number });
+    const user = await this.userRepo.findOne({ id: payload.id });
 
     if (!user) {
       throw new ApiError('You are not authorized', 401);
     }
 
-    const accessToken = sign(
-      { id: payload.id as number, role: payload.role as string },
-      process.env.ACCESS_TOKEN_SECRET_KEY as Secret,
-      {
-        expiresIn: process.env.ACCESS_TOKEN_EXPIRY_TIME,
-      },
-    );
+    const { accessToken } = generateJwt({ id: user.id, role: user.role }, [
+      ACCESS_TOKEN,
+    ]);
 
-    const now = new Date();
-    const accessTokenExpiryDate = new Date(
-      now.getTime() +
-        expiryDate(process.env.ACCESS_TOKEN_EXPIRY_TIME as string),
-    );
+    const { accessTokenExpiryDate } = expiryDateJwt([ACCESS_TOKEN]);
 
     return {
       user: { id: user.id, role: user.role },
@@ -155,23 +129,15 @@ export class UserService {
         registeredDate: existingUser.registeredDate,
       };
 
-      const accessToken = sign(
-        { id: existingUser.id, role: existingUser.role },
-        process.env.ACCESS_TOKEN_SECRET_KEY as Secret,
-        {
-          expiresIn: process.env.ACCESS_TOKEN_EXPIRY_TIME,
-        },
+      const { accessToken, refreshToken } = generateJwt(
+        { id: user.id, role: user.role },
+        [ACCESS_TOKEN, REFRESH_TOKEN],
       );
 
-      const refreshToken = sign(
-        { id: existingUser.id, role: existingUser.role },
-        process.env.REFRESH_TOKEN_SECRET_KEY as Secret,
-        {
-          expiresIn: process.env.REFRESH_TOKEN_EXPIRY_TIME,
-        },
-      );
-
-      const { accessTokenExpiryDate, refreshTokenExpiryDate } = jwtExpiryDate();
+      const { accessTokenExpiryDate, refreshTokenExpiryDate } = expiryDateJwt([
+        ACCESS_TOKEN,
+        REFRESH_TOKEN,
+      ]);
 
       return {
         user,
