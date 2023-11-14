@@ -1,5 +1,6 @@
 import { Prisma, type PrismaClient } from '@prisma/client';
 import prisma from '../../../database/client';
+import { paginationService } from '../../../helpers';
 
 export class UserRepo {
   constructor(private readonly prisma: PrismaClient) {}
@@ -15,8 +16,13 @@ export class UserRepo {
     return await this.prisma.user.findFirst({ where: query, ...options });
   }
 
-  async findMany() {
+  async findManyWithPagination(
+    query: Prisma.UserWhereInput,
+    options: { page: number; limit: number },
+  ) {
     return await this.prisma.user.findMany({
+      where: query,
+      ...paginationService(options.page, options.limit),
       select: {
         id: true,
         email: true,

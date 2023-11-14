@@ -2,15 +2,24 @@ import { Router } from 'express';
 import { asyncWrapper } from '../core';
 import { userService } from '../modules';
 import { responseStatus } from '../helpers';
-import { borrowerIdParamSchema, updateBorrowerSchema } from '../utils';
+import {
+  borrowerIdParamSchema,
+  updateBorrowerSchema,
+  queryPaginationSchema,
+} from '../utils';
 import { ApiError } from '../middlewares';
 
 const router = Router();
 
 router.get(
   '/',
-  asyncWrapper(async (_req, res) => {
-    const borrowers = await userService.findMany();
+  asyncWrapper(async (req, res) => {
+    const { page, limit } = queryPaginationSchema.parse(req.query);
+
+    const borrowers = await userService.findManyWithPagination(
+      {},
+      { page, limit },
+    );
 
     res.status(200).json({
       status: responseStatus.SUCCESS,
