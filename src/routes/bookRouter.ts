@@ -6,6 +6,7 @@ import {
   createBookSchema,
   bookIdParamSchema,
   updateBookSchema,
+  bookQuerySchema,
 } from '../utils';
 import { ApiError } from '../middlewares';
 
@@ -29,6 +30,21 @@ router.get(
   '/',
   asyncWrapper(async (_req, res) => {
     const books = await bookService.findMany();
+
+    res.status(200).json({
+      status: responseStatus.SUCCESS,
+      message: 'Books fetched successfully',
+      data: books,
+    });
+  }),
+);
+
+router.get(
+  '/search',
+  asyncWrapper(async (req, res) => {
+    const { field, query } = bookQuerySchema.parse(req.query);
+
+    const books = await bookService.findManyWithSearch(field, query);
 
     res.status(200).json({
       status: responseStatus.SUCCESS,

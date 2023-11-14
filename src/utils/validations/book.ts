@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { QUERIES } from '../../helpers';
 
 export const createBookSchema = z.object({
   title: z.string().min(1).max(255).trim(),
@@ -11,6 +12,11 @@ export const createBookSchema = z.object({
 
 export const bookIdParamSchema = z.object({
   id: z.coerce.number().int(),
+});
+
+export const bookQuerySchema = z.object({
+  field: z.string().refine((value) => QUERIES.includes(value)),
+  query: z.string(),
 });
 
 export const updateBookSchema = z.object({
