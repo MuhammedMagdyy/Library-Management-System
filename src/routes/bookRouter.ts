@@ -7,6 +7,7 @@ import {
   bookIdParamSchema,
   updateBookSchema,
   bookQuerySchema,
+  queryPaginationSchema,
 } from '../utils';
 import { ApiError } from '../middlewares';
 
@@ -28,8 +29,10 @@ router.post(
 
 router.get(
   '/',
-  asyncWrapper(async (_req, res) => {
-    const books = await bookService.findMany();
+  asyncWrapper(async (req, res) => {
+    const { page, limit } = queryPaginationSchema.parse(req.query);
+
+    const books = await bookService.findManyWithPagination({}, { page, limit });
 
     res.status(200).json({
       status: responseStatus.SUCCESS,

@@ -12,8 +12,11 @@ export class BookService {
     return await this.bookRepo.findOne(query);
   }
 
-  async findMany() {
-    return await this.bookRepo.findMany();
+  async findManyWithPagination(
+    query: Prisma.BookWhereInput,
+    options: { page: number; limit: number },
+  ) {
+    return await this.bookRepo.findManyWithPagination(query, options);
   }
 
   async findManyWithSearch(field: string, query: string) {
