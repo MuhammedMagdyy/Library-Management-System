@@ -30,18 +30,18 @@ export function generateJwt(
 }
 
 export function verifyJwt(token: string, tokenType: Token) {
-  let payload;
   try {
-    payload = verify(
+    const payload = verify(
       token,
       tokenType === ACCESS_TOKEN
         ? (process.env.ACCESS_TOKEN_SECRET_KEY as Secret)
         : (process.env.REFRESH_TOKEN_SECRET_KEY as Secret),
     ) as { id: number };
+
+    return { payload };
   } catch {
     throw new ApiError('Invalid token', 401);
   }
-  return { payload };
 }
 
 export function expiryDateJwt(tokenType: Token[]) {
