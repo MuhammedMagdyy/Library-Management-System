@@ -1,6 +1,6 @@
 import { Prisma, type PrismaClient } from '@prisma/client';
 import prisma from '../../../database/client';
-import { paginationService } from '../../../helpers';
+import { paginationService } from '../../Services';
 
 export class BookRepo {
   constructor(private readonly prisma: PrismaClient) {}

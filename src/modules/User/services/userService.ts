@@ -5,9 +5,8 @@ import {
   generateJwt,
   expiryDateJwt,
   verifyJwt,
-  ACCESS_TOKEN,
-  REFRESH_TOKEN,
-} from '../../../helpers';
+} from '../../Services';
+import { ACCESS_TOKEN, REFRESH_TOKEN } from '../../../helpers';
 import { ApiError } from '../../../middlewares';
 
 export class UserService {

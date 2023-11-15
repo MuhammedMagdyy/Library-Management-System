@@ -1,7 +1,6 @@
-import { expiryDate } from './expiryDate';
 import { sign, verify, Secret } from 'jsonwebtoken';
-import { ACCESS_TOKEN, REFRESH_TOKEN } from './constants';
-import { ApiError } from '../middlewares';
+import { ACCESS_TOKEN, REFRESH_TOKEN, expiryDate } from '../../helpers';
+import { ApiError } from '../../middlewares';
 
 type Token = typeof ACCESS_TOKEN | typeof REFRESH_TOKEN;
 
