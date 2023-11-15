@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { ZodError } from 'zod';
 import { responseStatus } from '../helpers';
+import { MulterError } from 'multer';
 
 export class ApiError extends Error {
   statusCode: number;
@@ -23,6 +24,19 @@ export const errorHandler = (
     return res
       .status(statusCode)
       .json({ status: responseStatus.FAIL, message });
+  }
+
+  if (err instanceof MulterError) {
+    if (err.code === 'LIMIT_FILE_SIZE') {
+      return res.status(413).json({
+        status: responseStatus.FAIL,
+        message: 'File size too large, maximum 5MB allowed',
+      });
+    }
+    return res.status(415).json({
+      status: responseStatus.FAIL,
+      message: 'Only images are allowed, jpg, jpeg, png',
+    });
   }
 
   if (err instanceof ZodError) {
