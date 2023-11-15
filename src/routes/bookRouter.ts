@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { asyncWrapper } from '../core';
-import { bookService } from '../modules';
+import { bookService, imgbbService } from '../modules';
 import { responseStatus } from '../helpers';
 import {
   createBookSchema,
@@ -9,14 +9,23 @@ import {
   bookQuerySchema,
   queryPaginationSchema,
 } from '../utils';
-import { ApiError } from '../middlewares';
+import { ApiError, multerOptions } from '../middlewares';
 
 const router = Router();
 
 router.post(
   '/',
+  multerOptions.single('image'),
   asyncWrapper(async (req, res) => {
-    const bookSchema = createBookSchema.parse(req.body);
+    let image;
+    if (req.file) {
+      const localImagePath = req.file.path;
+      const img = await imgbbService.uploadImage(localImagePath);
+
+      image = img;
+    }
+
+    const bookSchema = createBookSchema.parse({ ...req.body, image });
     const book = await bookService.createOne(bookSchema);
 
     res.status(201).json({
@@ -77,7 +86,17 @@ router.get(
 
 router.put(
   '/:id',
+  multerOptions.single('image'),
   asyncWrapper(async (req, res, next) => {
+    let image;
+
+    if (req.file) {
+      const localImagePath = req.file.path;
+      const img = await imgbbService.uploadImage(localImagePath);
+
+      image = img;
+    }
+
     const { id } = bookIdParamSchema.parse(req.params);
     const book = await bookService.findOne({ id });
 
@@ -85,7 +104,7 @@ router.put(
       return next(new ApiError('Book not found', 404));
     }
 
-    const bookSchema = updateBookSchema.parse(req.body);
+    const bookSchema = updateBookSchema.parse({ ...req.body, image });
     const updatedBook = await bookService.updateOne({ id }, bookSchema);
 
     res.status(200).json({
