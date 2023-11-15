@@ -7,10 +7,13 @@
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16.0-blue?logo=postgresql&style=flat)
 ![Prisma](https://img.shields.io/badge/Prisma-5.0-blueviolet?logo=prisma&style=flat)
 
-
 ## Table of Contents
+- [Introduction](#introduction)
 - [Prerequisites](#prerequisites)
 - [Setup](#setup)
+
+## Introduction
+The Library Management System (LMS) is designed to simplify the management of books and borrowers within a library environment. The primary goal is to efficiently handle book-related operations and user interactions to enhance the library experience.
 
 ## Prerequisites
 - Download and install [Nodejs](https://nodejs.org/en)
