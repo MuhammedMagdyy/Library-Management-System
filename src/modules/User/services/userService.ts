@@ -113,42 +113,44 @@ export class UserService {
   async login(email: string, password: string) {
     const existingUser = await this.userRepo.findOne({ email });
 
-    if (existingUser) {
-      const isCorrectPassword = await PasswordService.comparePasswords(
-        password,
-        existingUser?.password,
-      );
-
-      if (!isCorrectPassword) {
-        throw new ApiError('Invalid email or password', 401);
-      }
-
-      const user = {
-        id: existingUser.id,
-        name: existingUser.name,
-        email: existingUser.email,
-        role: existingUser.role,
-        registeredDate: existingUser.registeredDate,
-      };
-
-      const { accessToken, refreshToken } = generateJwt(
-        { id: user.id, role: user.role },
-        [ACCESS_TOKEN, REFRESH_TOKEN],
-      );
-
-      const { accessTokenExpiryDate, refreshTokenExpiryDate } = expiryDateJwt([
-        ACCESS_TOKEN,
-        REFRESH_TOKEN,
-      ]);
-
-      return {
-        user,
-        accessToken,
-        accessTokenExpiryDate,
-        refreshToken,
-        refreshTokenExpiryDate,
-      };
+    if (!existingUser) {
+      throw new ApiError('Invalid email or password', 401);
     }
+
+    const isCorrectPassword = await PasswordService.comparePasswords(
+      password,
+      existingUser?.password,
+    );
+
+    if (!isCorrectPassword) {
+      throw new ApiError('Invalid email or password', 401);
+    }
+
+    const user = {
+      id: existingUser.id,
+      name: existingUser.name,
+      email: existingUser.email,
+      role: existingUser.role,
+      registeredDate: existingUser.registeredDate,
+    };
+
+    const { accessToken, refreshToken } = generateJwt(
+      { id: user.id, role: user.role },
+      [ACCESS_TOKEN, REFRESH_TOKEN],
+    );
+
+    const { accessTokenExpiryDate, refreshTokenExpiryDate } = expiryDateJwt([
+      ACCESS_TOKEN,
+      REFRESH_TOKEN,
+    ]);
+
+    return {
+      user,
+      accessToken,
+      accessTokenExpiryDate,
+      refreshToken,
+      refreshTokenExpiryDate,
+    };
   }
 }
 
