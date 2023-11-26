@@ -9,28 +9,49 @@ datasource db {
 }
 
 model Book {
-  id                Int      @id @default(autoincrement())
+  id                Int         @id @default(autoincrement())
   title             String
   author            String
   isbn              String
-  availableQuantity Int      @default(0)
+  availableQuantity Int         @default(1)
   shelfLocation     String
   image             String
-  createdAt         DateTime @default(now())
-  updatedAt         DateTime @updatedAt
+  status            STATUS      @default(AVAILABLE)
+  createdAt         DateTime    @default(now())
+  updatedAt         DateTime    @updatedAt
+  Borrowing         Borrowing[]
 }
 
 model User {
-  id             Int      @id @default(autoincrement())
-  email          String   @unique
+  id             Int         @id @default(autoincrement())
+  email          String      @unique
   password       String
   name           String
-  role           Role     @default(BORROWER)
-  registeredDate DateTime @default(now())
-  updatedAt      DateTime @updatedAt
+  role           Role        @default(BORROWER)
+  registeredDate DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+  Borrowing      Borrowing[]
+}
+
+model Borrowing {
+  id         Int       @id @default(autoincrement())
+  borrowDate DateTime  @default(now())
+  returnDate DateTime?
+  book       Book      @relation(fields: [bookId], references: [id])
+  bookId     Int
+  user       User      @relation(fields: [userId], references: [id])
+  userId     Int
+  status     STATUS    @default(BORROWED)
 }
 
 enum Role {
   ADMIN
   BORROWER
+}
+
+enum STATUS {
+  AVAILABLE
+  NOT_AVAILABLE
+  BORROWED
+  RETURNED
 }
