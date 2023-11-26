@@ -1,3 +1,4 @@
 export * from './book';
-export * from './borrowers';
+export * from './borrower';
 export * from './pagination';
+export * from './borrowing';
