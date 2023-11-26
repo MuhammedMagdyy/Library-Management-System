@@ -9,12 +9,13 @@ import {
   bookQuerySchema,
   queryPaginationSchema,
 } from '../utils';
-import { ApiError, multerOptions } from '../middlewares';
+import { ApiError, isAdmin, multerOptions } from '../middlewares';
 
 const router = Router();
 
 router.post(
   '/',
+  isAdmin,
   multerOptions.single('image'),
   asyncWrapper(async (req, res) => {
     let image;
@@ -86,6 +87,7 @@ router.get(
 
 router.put(
   '/:id',
+  isAdmin,
   multerOptions.single('image'),
   asyncWrapper(async (req, res, next) => {
     let image;
@@ -117,6 +119,7 @@ router.put(
 
 router.delete(
   '/:id',
+  isAdmin,
   asyncWrapper(async (req, res, next) => {
     const { id } = bookIdParamSchema.parse(req.params);
     const book = await bookService.findOne({ id });
