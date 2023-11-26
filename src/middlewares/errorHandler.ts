@@ -23,18 +23,18 @@ export const errorHandler = (
 
     return res
       .status(statusCode)
-      .json({ status: responseStatus.FAIL, message });
+      .json({ status: responseStatus.FAILED, message });
   }
 
   if (err instanceof MulterError) {
     if (err.code === 'LIMIT_FILE_SIZE') {
       return res.status(413).json({
-        status: responseStatus.FAIL,
+        status: responseStatus.FAILED,
         message: 'File size too large, maximum 5MB allowed',
       });
     }
     return res.status(415).json({
-      status: responseStatus.FAIL,
+      status: responseStatus.FAILED,
       message: 'Only images are allowed, jpg, jpeg, png',
     });
   }
@@ -48,7 +48,7 @@ export const errorHandler = (
     });
 
     return res.status(400).json({
-      status: responseStatus.FAIL,
+      status: responseStatus.FAILED,
       message: 'Validation Error',
       errors,
     });
