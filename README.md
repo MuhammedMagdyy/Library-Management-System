@@ -10,6 +10,7 @@
 ## Table of Contents
 - [Introduction](#introduction)
 - [Prerequisites](#prerequisites)
+- [Schema](#schema)
 - [Setup](#setup)
 
 ## Introduction
@@ -20,6 +21,9 @@ The Library Management System (LMS) is designed to simplify the management of bo
 - Download and install [PostgreSQL](https://www.postgresql.org/download/) using [Docker](https://www.docker.com/) from [Docker Hub](https://hub.docker.com/_/postgres)
 - A text editor (e.g. Visual Studio Code `recommended`, Sublime Text)
 - A platform for testing APIs like [Postman](https://www.postman.com/downloads/)
+
+## Schema
+![schema](https://github.com/MuhammedMagdyy/Library-Management-System/assets/60513866/5737ac33-5624-4509-be10-c46d98225073)
 
 ## Setup
 To set up this project locally, follow these steps:
