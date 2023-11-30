@@ -10,6 +10,7 @@
 ## Table of Contents
 - [Introduction](#introduction)
 - [Prerequisites](#prerequisites)
+- [Features](#features)
 - [Schema](#schema)
 - [Setup](#setup)
 
@@ -21,6 +22,11 @@ The Library Management System (LMS) is designed to simplify the management of bo
 - Download and install [PostgreSQL](https://www.postgresql.org/download/) using [Docker](https://www.docker.com/) from [Docker Hub](https://hub.docker.com/_/postgres)
 - A text editor (e.g. Visual Studio Code `recommended`, Sublime Text)
 - A platform for testing APIs like [Postman](https://www.postman.com/downloads/)
+
+## Features
+The system supports two roles:
+1. **Admin:** An administrator with privileges to perform all operations on books and borrowers.
+2. **Borrower:** A user who can interact with the borrowing process and manage their details.
 
 ## Schema
 ![schema](https://github.com/MuhammedMagdyy/Library-Management-System/assets/60513866/5737ac33-5624-4509-be10-c46d98225073)
