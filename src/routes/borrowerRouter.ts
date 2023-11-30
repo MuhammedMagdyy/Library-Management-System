@@ -7,17 +7,18 @@ import {
   updateBorrowerSchema,
   queryPaginationSchema,
 } from '../utils';
-import { ApiError } from '../middlewares';
+import { ApiError, isAdmin } from '../middlewares';
 
 const router = Router();
 
 router.get(
   '/',
+  isAdmin,
   asyncWrapper(async (req, res) => {
     const { page, limit } = queryPaginationSchema.parse(req.query);
 
     const borrowers = await userService.findManyWithPagination(
-      {},
+      { role: 'BORROWER' },
       { page, limit },
     );
 
@@ -31,6 +32,7 @@ router.get(
 
 router.get(
   '/:id',
+  isAdmin,
   asyncWrapper(async (req, res, next) => {
     const { id } = borrowerIdParamSchema.parse(req.params);
     const borrower = await userService.findOne(
@@ -63,9 +65,14 @@ router.put(
   asyncWrapper(async (req, res, next) => {
     const { id } = borrowerIdParamSchema.parse(req.params);
     const borrower = await userService.findOne({ id });
+    const userId = req.user?.id;
 
     if (!borrower) {
       return next(new ApiError('Borrower not found', 404));
+    }
+
+    if (userId !== id) {
+      return next(new ApiError('You are not authorized', 401));
     }
 
     const borrowerSchema = updateBorrowerSchema.parse(req.body);
@@ -86,6 +93,7 @@ router.put(
 
 router.delete(
   '/:id',
+  isAdmin,
   asyncWrapper(async (req, res, next) => {
     const { id } = borrowerIdParamSchema.parse(req.params);
     const borrower = await userService.findOne({ id });
