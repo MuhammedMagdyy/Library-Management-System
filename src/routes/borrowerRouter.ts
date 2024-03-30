@@ -43,7 +43,7 @@ router.get(
           email: true,
           name: true,
           role: true,
-          registeredDate: true,
+          created_at: true,
         },
       },
     );
