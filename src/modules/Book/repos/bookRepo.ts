@@ -20,7 +20,7 @@ export class BookRepo {
     return await this.prisma.book.findMany({
       where: query,
       ...paginationService(options.page, options.limit),
-      orderBy: { createdAt: 'asc' },
+      orderBy: { created_at: 'asc' },
     });
   }
 
