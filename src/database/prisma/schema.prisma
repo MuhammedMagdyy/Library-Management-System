@@ -9,39 +9,54 @@ datasource db {
 }
 
 model Book {
-  id                Int         @id @default(autoincrement())
-  title             String
-  author            String
-  isbn              String
-  availableQuantity Int         @default(1)
-  shelfLocation     String
-  image             String
-  status            Status      @default(AVAILABLE)
-  createdAt         DateTime    @default(now())
-  updatedAt         DateTime    @updatedAt
-  Borrowing         Borrowing[]
+  id                 Int         @id @default(autoincrement())
+  title              String
+  author             String
+  isbn               String
+  available_quantity Int?        @default(1)
+  image              String
+  published_date     DateTime
+  rating             Float?
+  views              Int?        @default(0)
+  status             Status      @default(AVAILABLE)
+  created_at         DateTime    @default(now())
+  updated_at         DateTime    @updatedAt
+  Category           Category[]
+  Borrowing          Borrowing[]
 }
 
 model User {
-  id             Int         @id @default(autoincrement())
-  email          String      @unique
-  password       String
-  name           String
-  role           Role        @default(BORROWER)
-  registeredDate DateTime    @default(now())
-  updatedAt      DateTime    @updatedAt
-  Borrowing      Borrowing[]
+  id                Int         @id @default(autoincrement())
+  name              String
+  email             String      @unique
+  password          String
+  image             String?
+  role              Role        @default(BORROWER)
+  created_at        DateTime    @default(now())
+  updated_at        DateTime    @updatedAt
+  favorite_category Category    @relation(fields: [category_id], references: [id])
+  category_id       Int
+  Borrowing         Borrowing[]
 }
 
 model Borrowing {
-  id         Int       @id @default(autoincrement())
-  borrowDate DateTime  @default(now())
-  returnDate DateTime?
-  book       Book      @relation(fields: [bookId], references: [id])
-  bookId     Int
-  user       User      @relation(fields: [userId], references: [id])
-  userId     Int
-  status     Status    @default(BORROWED)
+  id          Int       @id @default(autoincrement())
+  borrow_date DateTime  @default(now())
+  return_date DateTime?
+  book        Book      @relation(fields: [book_id], references: [id])
+  book_id     Int
+  user        User      @relation(fields: [user_id], references: [id])
+  user_id     Int
+  status      Status    @default(BORROWED)
+}
+
+model Category {
+  id         Int      @id @default(autoincrement())
+  name       String
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  Books      Book[]
+  Users      User[]
 }
 
 enum Role {
