@@ -6,7 +6,7 @@ import { ApiError } from '../../../middlewares';
 type ImageUploadResponse = { data: { url: string } };
 
 export class ImgbbService {
-  private readonly BASE_URL = 'https://api.imgbb.com/1/upload';
+  private readonly BASE_URL = process.env.IMGBB_API_BASE_URL as string;
 
   async uploadImage(image: string): Promise<string> {
     const payload = new FormData();
