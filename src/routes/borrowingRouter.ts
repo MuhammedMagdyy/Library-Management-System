@@ -19,13 +19,13 @@ router.post(
     const userId = req.user?.id;
     const borrowingSchema = createBorrowingSchema.parse(req.body);
     const book = await bookService.findOne({
-      id: borrowingSchema.bookId,
-      availableQuantity: { gt: 0 },
+      id: borrowingSchema.book_id,
+      available_quantity: { gt: 0 },
       status: Status.AVAILABLE,
     });
     const alreadyBorrowed = await borrowingService.findOne({
-      bookId: borrowingSchema.bookId,
-      userId,
+      book_id: borrowingSchema.book_id,
+      user_id: userId,
       status: Status.BORROWED,
     });
 
@@ -33,7 +33,7 @@ router.post(
       return next(new ApiError('Book not available for checkout', 404));
     }
 
-    if (userId !== borrowingSchema.userId) {
+    if (userId !== borrowingSchema.user_id) {
       return next(new ApiError('You can only borrow books for yourself', 401));
     }
 
@@ -41,19 +41,21 @@ router.post(
       return next(new ApiError('You already borrowed this book', 400));
     }
 
-    let bookQty = book.availableQuantity,
+    let bookQty = book.available_quantity,
       bookStatus = Status.AVAILABLE as Status;
 
-    if (book.availableQuantity === 1) {
-      bookQty -= 1;
-      bookStatus = Status.BORROWED;
-    } else {
-      bookQty -= 1;
+    if (bookQty) {
+      if (book.available_quantity === 1) {
+        bookQty -= 1;
+        bookStatus = Status.BORROWED;
+      } else {
+        bookQty -= 1;
+      }
     }
 
     await bookService.updateOne(
-      { id: borrowingSchema.bookId },
-      { availableQuantity: bookQty, status: bookStatus },
+      { id: borrowingSchema.book_id },
+      { available_quantity: bookQty, status: bookStatus },
     );
 
     const borrowing = await borrowingService.createOne(borrowingSchema);
@@ -69,30 +71,34 @@ router.post(
 router.put(
   '/return-book',
   asyncWrapper(async (req, res, next) => {
-    const { bookId } = updateBorrowingSchema.parse(req.body);
+    const { book_id } = updateBorrowingSchema.parse(req.body);
     const userId = req.user?.id;
 
     const borrowing = await borrowingService.findOne({
-      bookId,
-      userId,
-      returnDate: null,
+      book_id,
+      user_id: userId,
+      return_date: null,
     });
 
-    const book = await bookService.findOne({ id: bookId });
+    const book = await bookService.findOne({ id: book_id });
 
     if (!borrowing || !book) {
       return next(new ApiError('Borrowing not found', 404));
     }
 
+    const updatedAvailableQuantity = book.available_quantity
+      ? book.available_quantity + 1
+      : 1;
+
     await Promise.all([
       borrowingService.updateOne(
         { id: borrowing.id },
-        { returnDate: new Date(), status: Status.RETURNED },
+        { return_date: new Date(), status: Status.RETURNED },
       ),
       bookService.updateOne(
-        { id: bookId },
+        { id: book_id },
         {
-          availableQuantity: book.availableQuantity + 1,
+          available_quantity: updatedAvailableQuantity,
           status: Status.AVAILABLE,
         },
       ),
@@ -109,10 +115,10 @@ router.get(
   '/:borrowerId',
   asyncWrapper(async (req, res) => {
     const { page, limit } = queryPaginationSchema.parse(req.query);
-    const { borrowerId } = borrowingIdParamSchema.parse(req.params);
+    const { user_id } = borrowingIdParamSchema.parse(req.params);
 
     const borrowings = await borrowingService.findManyWithPagination(
-      { userId: borrowerId },
+      { user_id },
       { page, limit },
     );
 

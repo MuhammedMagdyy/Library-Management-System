@@ -33,7 +33,7 @@ export class UserService {
         name: userObject.name,
         email: userObject.email,
         role: userObject.role,
-        registeredDate: userObject.registeredDate,
+        createdAt: userObject.created_at,
       };
 
       const { accessTokenExpiryDate, refreshTokenExpiryDate } = expiryDateJwt([
@@ -131,7 +131,7 @@ export class UserService {
       name: existingUser.name,
       email: existingUser.email,
       role: existingUser.role,
-      registeredDate: existingUser.registeredDate,
+      createdAt: existingUser.created_at,
     };
 
     const { accessToken, refreshToken } = generateJwt(

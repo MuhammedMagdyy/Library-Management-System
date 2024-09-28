@@ -22,8 +22,8 @@ export class BorrowingRepo {
       ...paginationService(options.page, options.limit),
       select: {
         id: true,
-        bookId: true,
-        userId: true,
+        book_id: true,
+        user_id: true,
         status: true,
         book: {
           select: {
